@@ -52,7 +52,7 @@ class _SigninState extends State<Signin> {
     if (context.watch<AuthBloc>().isSignedIn) {
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         Navigator.of(context).pop();
-        Navigator.of(context).pushNamed("/home");
+        Navigator.of(context).pushNamed("/dashboard");
       });
     }
 
@@ -66,7 +66,7 @@ class _SigninState extends State<Signin> {
             text: 'Continue',
             press: () async {
               if (validateemail(emailcontroller.text)) {
-                var result = await authBloc!.signInwithEmailPassword(
+                var result = await authBloc!.signInwithEmailPassword(context,
                     emailcontroller.text, passwordcontroller.text);
                 if (!result) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -77,7 +77,7 @@ class _SigninState extends State<Signin> {
                   ));
                 } else {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed("/home");
+                  Navigator.of(context).pushNamed("/dashboard");
                 }
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

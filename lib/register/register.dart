@@ -94,7 +94,7 @@ class _RegisterState extends State<Register> {
                   var result =
                       await Provider.of<AuthBloc>(context, listen: false)
                           .signUpwithEmailPassword(fullnamecontroller.text,
-                              emailcontroller.text, passwordcontroller.text);
+                              emailcontroller.text, passwordcontroller.text,context);
                   if (!result) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(
