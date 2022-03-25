@@ -14,4 +14,6 @@ class SavedAddressContainer extends ItemsContainer {}
 
 class DeliveriesContainer extends ItemsContainer {}
 
+class UserDeliveriesContainer extends ItemsContainer {}
+
 class PaymentsContainer extends ItemsContainer {}

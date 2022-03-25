@@ -65,6 +65,84 @@ class ItemsHelper {
     });
   }
 
+  getItemsBy(ItemsContainer itemsContainer,orderby) async {
+    itemsContainer.clear();
+    // QuerySnapshot<Map<String, dynamic>> items =
+    //     await firestore.collection(baseref!).get();
+
+    // items.docs.forEach((element) {
+    //   Item item = type.empty();
+    //   item.fromMap(element.data());
+    //   itemsContainer.addItem(item, element.reference.path.toString());
+    // });
+    // print(itemsContainer.refbucket.toString());
+    Item type = itema!;
+    firestore.collection(baseref!).orderBy(orderby).snapshots().forEach((element) {
+      itemsContainer.clear();
+      element.docs.forEach((element) {
+        Item item = type.empty();
+        item.fromMap(element.data());
+        item.ref = element.reference.path.toString();
+
+        itemsContainer.addItem(item, element.reference.path.toString());
+      });
+    });
+  }
+
+
+getXItems(ItemsContainer itemsContainer,int limit,orderby) async {
+    itemsContainer.clear();
+    // QuerySnapshot<Map<String, dynamic>> items =
+    //     await firestore.collection(baseref!).get();
+
+    // items.docs.forEach((element) {
+    //   Item item = type.empty();
+    //   item.fromMap(element.data());
+    //   itemsContainer.addItem(item, element.reference.path.toString());
+    // });
+    // print(itemsContainer.refbucket.toString());
+    Item type = itema!;
+    firestore.collection(baseref!).orderBy(orderby).limit(limit).snapshots().forEach((element) {
+      itemsContainer.clear();
+      element.docs.forEach((element) {
+        Item item = type.empty();
+        item.fromMap(element.data());
+        item.ref = element.reference.path.toString();
+
+        itemsContainer.addItem(item, element.reference.path.toString());
+      });
+    });
+  }
+
+getNextXItems(ItemsContainer itemsContainer,int limit, List<Object> after, Object orderby) async {
+    itemsContainer.clear();
+    
+    Item type = itema!;
+    firestore.collection(baseref!).orderBy(orderby).startAfter(after).limit(limit).snapshots().forEach((element) {
+      itemsContainer.clear();
+      element.docs.forEach((element) {
+        Item item = type.empty();
+        item.fromMap(element.data());
+        item.ref = element.reference.path.toString();
+
+        itemsContainer.addItem(item, element.reference.path.toString());
+      });
+    });
+  }getPrevXItems(ItemsContainer itemsContainer,int limit,List<Object> before, Object orderby) async {
+    itemsContainer.clear();
+
+    Item type = itema!;
+    firestore.collection(baseref!).orderBy(orderby).endAt(before).limit(limit).snapshots().forEach((element) {
+      itemsContainer.clear();
+      element.docs.forEach((element) {
+        Item item = type.empty();
+        item.fromMap(element.data());
+        item.ref = element.reference.path.toString();
+
+        itemsContainer.addItem(item, element.reference.path.toString());
+      });
+    });
+  }
   getItemsWhere(ItemsContainer itemsContainer, name, value) async {
     itemsContainer.clear();
 
@@ -86,6 +164,27 @@ class ItemsHelper {
     });
   }
 
+ getItemsWhereBy(ItemsContainer itemsContainer, name, value, orderby) async {
+    itemsContainer.clear();
+
+    Item type = itema!;
+    firestore
+        .collection(baseref!)
+        .where('$name', isEqualTo: '$value')
+        .orderBy(orderby)
+        .snapshots()
+        .forEach((element) {
+      itemsContainer.clear();
+      element.docs.forEach((element) {
+        Item item = type.empty();
+        print(element.data().toString());
+        item.fromMap(element.data());
+
+        item.ref = element.reference.path.toString();
+        itemsContainer.addItem(item, element.reference.path.toString());
+      });
+    });
+  }
   Future<int> getItemsCountWhere(name, value) async {
     int number = 0;
     await firestore

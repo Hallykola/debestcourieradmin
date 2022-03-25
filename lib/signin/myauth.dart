@@ -1004,22 +1004,17 @@ class AuthBloc extends ChangeNotifier {
 
   getAllDeliveries(context) {
     Order order = Order();
-    order.getItems(
-      Provider.of<DeliveriesContainer>(context, listen: false),
-    );
-
-    // order.getItemsWhere(
-    //     Provider.of<DeliveriesContainer>(context, listen: false),
-    //     'rideruid',
-    //     Provider.of<AuthBloc>(context, listen: false).uid);
+    // order.getItems(
+    //   Provider.of<DeliveriesContainer>(context, listen: false),
+    // );
+    order.getXItems(Provider.of<DeliveriesContainer>(context, listen: false),
+        10, "ordertime");
   }
 
   getAllPayments(context) {
     Payment payments = Payment();
-    payments.getItemsWhere(
-        Provider.of<PaymentsContainer>(context, listen: false),
-        'owneruid',
-        Provider.of<AuthBloc>(context, listen: false).uid);
+        payments.getXItems(Provider.of<PaymentsContainer>(context, listen: false),
+        10, "paymenttime");
   }
 
   getDeviceTokenInAdvance(context) {

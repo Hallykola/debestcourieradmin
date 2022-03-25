@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'Widgets/utilbloc.dart';
+import 'dashboard/dashBloc.dart';
 import 'models/categoriescontainer.dart';
 import 'savedaddress/savedaddressbloc.dart';
 import 'signin/myauth.dart';
@@ -34,9 +35,11 @@ void main() async {
     ChangeNotifierProvider(create: (_) => SavedAddressContainer()),
     ChangeNotifierProvider(create: (_) => SavedAddressBloc()),
     ChangeNotifierProvider(create: (_) => DeliveriesContainer()),
+    ChangeNotifierProvider(create: (_) => UserDeliveriesContainer()),
     ChangeNotifierProvider(create: (_) => UtilBloc()),
     ChangeNotifierProvider(create: (_) => FcmtokenContainer()),
     ChangeNotifierProvider(create: (_) => PaymentsContainer()),
+    ChangeNotifierProvider(create: (_) => DashBloc()),
   ], child: const MyApp()));
 }
 
@@ -48,7 +51,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       //scrollBehavior: const MaterialScrollBehavior().copyWith(dragDevices: {PointerDeviceKind.mouse},),
-       navigatorKey: NavigationService.navigatorKey,
+      navigatorKey: NavigationService.navigatorKey,
       title: 'Courier Admin',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -69,7 +72,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class NavigationService { 
-  static GlobalKey<NavigatorState> navigatorKey = 
-  GlobalKey<NavigatorState>();
+class NavigationService {
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }

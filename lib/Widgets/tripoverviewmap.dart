@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
+// import 'dart:ffi';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:courieradmin/models/categoriescontainer.dart';
 import 'package:courieradmin/models/profile.dart';
@@ -13,6 +13,7 @@ import 'package:courieradmin/request/locationservice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TripOverviewMap extends StatefulWidget {
   final Order order;
@@ -108,6 +109,7 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
             ),
             Expanded(
               child: SingleChildScrollView(
+                
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                   SenderTile(order: order),
                   Divider(
@@ -123,7 +125,7 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
                       onPressed: () {
                         // setDeliveryStatus(DeliveryStatus.PICKED, order!,
                         //     data: "5");
-                        showPickerArray(context ,order!);
+                        showPickerArray(context, order!);
                       },
                       child: ListTile(
                         leading: Icon(Icons.add_box),
@@ -175,7 +177,8 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
                     leading: Icon(Icons.note),
                     title: Text('Package Note'),
                     subtitle: Text('${order!.packagedetail ?? ""}'),
-                  )
+                  ),
+                  
                 ]),
               ),
             )
@@ -222,6 +225,8 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
     await utilbloc.getProfile(order!.senderuid, context);
   }
 
+  
+
   showPickerArray(BuildContext context, Order order) {
     const PickerData2 = '''
 [
@@ -253,9 +258,8 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
         onConfirm: (Picker picker, List value) {
           print(value.toString());
           print(picker.getSelectedValues());
-          setNewStatus(
-            order,picker.getSelectedValues()[0],data: picker.getSelectedValues()[1]
-          );
+          setNewStatus(order, picker.getSelectedValues()[0],
+              data: picker.getSelectedValues()[1]);
         }).showDialog(context);
   }
 
@@ -307,45 +311,76 @@ enum DeliveryStatus {
   DELIVERED
 }
 
+// class SenderTile extends StatelessWidget {
+//   const SenderTile({
+//     Key? key,
+//     required this.order,
+//   }) : super(key: key);
+
+//   final Order? order;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListTile(
+//       leading: CircleAvatar(
+//         radius: 40,
+//         backgroundImage: (context
+//                 .watch<OtherProfilesContainer>()
+//                 .content
+//                 .isEmpty)
+//             ? NetworkImage(
+//                 'https://firebasestorage.googleapis.com/v0/b/debest-courier.appspot.com/o/photo-1494790108377-be9c29b29330%20(2).jpg?alt=media&token=71ebb4c1-7fa1-4503-9bf8-ee0bd1bfd9b2')
+//             : NetworkImage(context
+//                 .watch<OtherProfilesContainer>()
+//                 .content[0]['item']
+//                 .profilepicurl),
+//       ),
+//       title: Text('${order!.sendername}'),
+//       subtitle: Text('${order!.senderphone}'),
+//       trailing: Row(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
+//           IconButton(onPressed: () {}, icon: const Icon(Icons.message)),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// class Usertile extends StatelessWidget {
+//   const Usertile({
+//     Key? key,
+//     required this.order,
+//   }) : super(key: key);
+
+//   final Order? order;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListTile(
+//       leading: CircleAvatar(
+//         radius: 40,
+//         backgroundImage: NetworkImage(context
+//             .watch<ProfilesContainer>()
+//             .content[0]['item']
+//             .profilepicurl),
+//       ),
+//       title: Text('${order!.ridername}'),
+//       subtitle: Text('${order!.riderphone}'),
+//       trailing: Row(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
+//           IconButton(onPressed: () {}, icon: const Icon(Icons.message)),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
 class SenderTile extends StatelessWidget {
   const SenderTile({
-    Key? key,
-    required this.order,
-  }) : super(key: key);
-
-  final Order? order;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        radius: 40,
-        backgroundImage: (context
-                .watch<OtherProfilesContainer>()
-                .content
-                .isEmpty)
-            ? NetworkImage(
-                'https://firebasestorage.googleapis.com/v0/b/debest-courier.appspot.com/o/photo-1494790108377-be9c29b29330%20(2).jpg?alt=media&token=71ebb4c1-7fa1-4503-9bf8-ee0bd1bfd9b2')
-            : NetworkImage(context
-                .watch<OtherProfilesContainer>()
-                .content[0]['item']
-                .profilepicurl),
-      ),
-      title: Text('${order!.sendername}'),
-      subtitle: Text('${order!.senderphone}'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.message)),
-        ],
-      ),
-    );
-  }
-}
-
-class Usertile extends StatelessWidget {
-  const Usertile({
     Key? key,
     required this.order,
   }) : super(key: key);
@@ -362,13 +397,73 @@ class Usertile extends StatelessWidget {
             .content[0]['item']
             .profilepicurl),
       ),
+      title: Text('${order!.sendername}'),
+      subtitle: Text('${order!.senderphone}'),
+      // trailing: Row(
+      //   mainAxisSize: MainAxisSize.min,
+      //   children: [
+      //     IconButton(
+      //         onPressed: () {
+      //           launch('tel:${order!.senderphone!}');
+      //         },
+      //         icon: const Icon(Icons.call)),
+      //     IconButton(
+      //         onPressed: () {
+      //           launch('sms: ${order!.senderphone!}');
+      //         },
+      //         icon: const Icon(Icons.message)),
+      //   ],
+      // ),
+    );
+  }
+}
+
+class Usertile extends StatelessWidget {
+  const Usertile({
+    Key? key,
+    required this.order,
+  }) : super(key: key);
+
+  final Order? order;
+
+  @override
+  Widget build(BuildContext context) {
+    print(context
+        .watch<ProfilesContainer>()
+        .content[0]['item']
+        .currentlocation
+        .toString());
+    print(
+        context.watch<ProfilesContainer>().content[0]['item'].name.toString());
+    return ListTile(
+      leading: CircleAvatar(
+        radius: 40,
+        backgroundImage: (context
+                .watch<OtherProfilesContainer>()
+                .content
+                .isEmpty)
+            ? NetworkImage(
+                'https://firebasestorage.googleapis.com/v0/b/debest-courier.appspot.com/o/photo-1494790108377-be9c29b29330%20(2).jpg?alt=media&token=71ebb4c1-7fa1-4503-9bf8-ee0bd1bfd9b2')
+            : NetworkImage(context
+                .watch<OtherProfilesContainer>()
+                .content[0]['item']
+                .profilepicurl),
+      ),
       title: Text('${order!.ridername}'),
       subtitle: Text('${order!.riderphone}'),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.message)),
+          IconButton(
+              onPressed: () {
+                launch('tel:${order!.riderphone!}');
+              },
+              icon: const Icon(Icons.call)),
+          IconButton(
+              onPressed: () {
+                launch('sms:${order!.riderphone!}');
+              },
+              icon: const Icon(Icons.message)),
         ],
       ),
     );
