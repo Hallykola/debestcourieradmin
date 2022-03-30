@@ -2,7 +2,7 @@ import 'package:courieradmin/Helpers/itemhelper.dart';
 import 'package:courieradmin/models/item.dart';
 
 class Payment extends ItemsHelper with Item {
-  String reference = " ";
+  int reference = 0;
   String paymentfororder = " ";
   String paymenttime = " ";
   double amount = 0;
@@ -33,7 +33,7 @@ class Payment extends ItemsHelper with Item {
 
   @override
   void fromMap(Map<String, dynamic> map) {
-    reference = map['reference'] ?? '';
+    reference = map['reference'] ?? 0;
     paymentfororder = map['Paymentfororder'] ?? '';
     paymenttime = map['paymenttime'] ?? '';
     amount = map['amount'] ?? 0;

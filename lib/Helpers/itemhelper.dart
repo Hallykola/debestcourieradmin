@@ -65,7 +65,7 @@ class ItemsHelper {
     });
   }
 
-  getItemsBy(ItemsContainer itemsContainer,orderby) async {
+  getItemsBy(ItemsContainer itemsContainer, orderby) async {
     itemsContainer.clear();
     // QuerySnapshot<Map<String, dynamic>> items =
     //     await firestore.collection(baseref!).get();
@@ -77,7 +77,11 @@ class ItemsHelper {
     // });
     // print(itemsContainer.refbucket.toString());
     Item type = itema!;
-    firestore.collection(baseref!).orderBy(orderby).snapshots().forEach((element) {
+    firestore
+        .collection(baseref!)
+        .orderBy(orderby)
+        .snapshots()
+        .forEach((element) {
       itemsContainer.clear();
       element.docs.forEach((element) {
         Item item = type.empty();
@@ -89,8 +93,7 @@ class ItemsHelper {
     });
   }
 
-
-getXItems(ItemsContainer itemsContainer,int limit,orderby) async {
+  getXItems(ItemsContainer itemsContainer, int limit, orderby) async {
     itemsContainer.clear();
     // QuerySnapshot<Map<String, dynamic>> items =
     //     await firestore.collection(baseref!).get();
@@ -102,7 +105,12 @@ getXItems(ItemsContainer itemsContainer,int limit,orderby) async {
     // });
     // print(itemsContainer.refbucket.toString());
     Item type = itema!;
-    firestore.collection(baseref!).orderBy(orderby).limit(limit).snapshots().forEach((element) {
+    firestore
+        .collection(baseref!)
+        .orderBy(orderby)
+        .limit(limit)
+        .snapshots()
+        .forEach((element) {
       itemsContainer.clear();
       element.docs.forEach((element) {
         Item item = type.empty();
@@ -114,25 +122,40 @@ getXItems(ItemsContainer itemsContainer,int limit,orderby) async {
     });
   }
 
-getNextXItems(ItemsContainer itemsContainer,int limit, List<Object> after, Object orderby) async {
+  getNextXItems(ItemsContainer itemsContainer, int limit, List<Object> after,
+      Object orderby) async {
     itemsContainer.clear();
-    
     Item type = itema!;
-    firestore.collection(baseref!).orderBy(orderby).startAfter(after).limit(limit).snapshots().forEach((element) {
-      itemsContainer.clear();
+    firestore
+        .collection(baseref!)
+        .orderBy(orderby)
+        .startAfter(after)
+        .limit(limit)
+        .snapshots()
+        .forEach((element) {
       element.docs.forEach((element) {
         Item item = type.empty();
         item.fromMap(element.data());
         item.ref = element.reference.path.toString();
 
         itemsContainer.addItem(item, element.reference.path.toString());
+        print(itemsContainer.container.length);
       });
     });
-  }getPrevXItems(ItemsContainer itemsContainer,int limit,List<Object> before, Object orderby) async {
+  }
+
+  getPrevXItems(ItemsContainer itemsContainer, int limit, List<Object> before,
+      Object orderby) async {
     itemsContainer.clear();
 
     Item type = itema!;
-    firestore.collection(baseref!).orderBy(orderby).endAt(before).limit(limit).snapshots().forEach((element) {
+    firestore
+        .collection(baseref!)
+        .orderBy(orderby)
+        .endAt(before)
+        .limit(limit)
+        .snapshots()
+        .forEach((element) {
       itemsContainer.clear();
       element.docs.forEach((element) {
         Item item = type.empty();
@@ -143,6 +166,54 @@ getNextXItems(ItemsContainer itemsContainer,int limit, List<Object> after, Objec
       });
     });
   }
+
+  getItemsWhereDateRange(ItemsContainer itemsContainer, name, value, datefield,
+      startDate, endDate) async {
+    itemsContainer.clear();
+
+    Item type = itema!;
+    firestore
+        .collection(baseref!)
+        .where('$name', isEqualTo: '$value')
+        .where(datefield, isGreaterThanOrEqualTo: startDate)
+        .where(datefield, isLessThan: endDate)
+        .snapshots()
+        .forEach((element) {
+      itemsContainer.clear();
+      element.docs.forEach((element) {
+        Item item = type.empty();
+        print(element.data().toString());
+        item.fromMap(element.data());
+
+        item.ref = element.reference.path.toString();
+        itemsContainer.addItem(item, element.reference.path.toString());
+      });
+    });
+  }
+
+  getItemsDateRange(
+      ItemsContainer itemsContainer, datefield, startDate, endDate) async {
+    itemsContainer.clear();
+
+    Item type = itema!;
+    firestore
+        .collection(baseref!)
+        .where(datefield, isGreaterThanOrEqualTo: startDate)
+        .where(datefield, isLessThan: endDate)
+        .snapshots()
+        .forEach((element) {
+      itemsContainer.clear();
+      element.docs.forEach((element) {
+        Item item = type.empty();
+        print(element.data().toString());
+        item.fromMap(element.data());
+
+        item.ref = element.reference.path.toString();
+        itemsContainer.addItem(item, element.reference.path.toString());
+      });
+    });
+  }
+
   getItemsWhere(ItemsContainer itemsContainer, name, value) async {
     itemsContainer.clear();
 
@@ -164,7 +235,7 @@ getNextXItems(ItemsContainer itemsContainer,int limit, List<Object> after, Objec
     });
   }
 
- getItemsWhereBy(ItemsContainer itemsContainer, name, value, orderby) async {
+  getItemsWhereBy(ItemsContainer itemsContainer, name, value, orderby) async {
     itemsContainer.clear();
 
     Item type = itema!;
@@ -185,6 +256,7 @@ getNextXItems(ItemsContainer itemsContainer,int limit, List<Object> after, Objec
       });
     });
   }
+
   Future<int> getItemsCountWhere(name, value) async {
     int number = 0;
     await firestore

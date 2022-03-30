@@ -36,6 +36,7 @@ class Order extends ItemsHelper with Item {
   String? riderpasscode;
   String? receiveruid;
   String? ordertime;
+  int? ordertimeepoch;
   String? deliverystatus;
 
   Order() : super('orders') {
@@ -91,6 +92,7 @@ class Order extends ItemsHelper with Item {
     this.pickupaddresslng,
     this.dropoffaddresslng,
     this.senderpasscode,
+    this.ordertimeepoch,
   }) : super('orders');
 
   Order copyWith({
@@ -127,6 +129,7 @@ class Order extends ItemsHelper with Item {
     String? dropoffaddresslng,
     String? senderpasscode,
     String? riderpasscode,
+    int? ordertimeepoch,
   }) {
     return Order.withParams(
       pickupaddress: pickupaddress ?? this.pickupaddress,
@@ -157,6 +160,7 @@ class Order extends ItemsHelper with Item {
       riderpasscode: riderpasscode ?? this.riderpasscode,
       receiveruid: receiveruid ?? this.receiveruid,
       ordertime: ordertime ?? this.ordertime,
+      ordertimeepoch: ordertimeepoch ?? this.ordertimeepoch,
       deliverystatus: deliverystatus ?? this.deliverystatus,
       pickupaddresslat: pickupaddresslat ?? this.pickupaddresslat,
       dropoffaddresslat: dropoffaddresslat ?? this.dropoffaddresslat,
@@ -195,6 +199,7 @@ class Order extends ItemsHelper with Item {
       'riderpasscode': riderpasscode,
       'receiveruid': receiveruid,
       'ordertime': ordertime,
+      'ordertimeepoch': ordertimeepoch,
       'deliverystatus': deliverystatus,
       'dropoffaddresslat': dropoffaddresslat,
       'pickupaddresslat': pickupaddresslat,
@@ -233,6 +238,7 @@ class Order extends ItemsHelper with Item {
       senderpasscode: map['senderpasscode'] ?? "",
       riderpasscode: map['riderpasscode'] ?? "",
       ordertime: map['ordertime'] ?? "",
+      ordertimeepoch: map['ordertimeepoch'] ?? 0,
       deliverystatus: map['deliverystatus'] ?? "",
       pickupaddresslat: map['pickupaddresslat'] ?? "",
       dropoffaddresslat: map['dropoffaddresslat'] ?? "",
@@ -247,7 +253,7 @@ class Order extends ItemsHelper with Item {
 
   @override
   String toString() {
-    return 'Order(pickupaddress: $pickupaddress, dropoffaddress: $dropoffaddress, packagetype: $packagetype, packageheight: $packageheight, packagewidth: $packagewidth, packagelength: $packagelength, packagefrangible: $packagefrangible, packageweight: $packageweight, packagedetail: $packagedetail, sendername: $sendername, senderphone: $senderphone, receiverphone: $receiverphone, receivername: $receivername, estimateddistance: $estimateddistance, deliverymode: $deliverymode, costofdelivery: $costofdelivery, paymentmode: $paymentmode, paymentstatus: $paymentstatus, currentlocation: $currentlocation, locationhistory: $locationhistory, ridername: $ridername, riderphone: $riderphone, rideruid: $rideruid, receiveruid: $receiveruid, senderuid: $senderuid,pickupaddresslat: $pickupaddresslat,dropoffaddresslat: $dropoffaddresslat,pickupaddresslng: $pickupaddresslng,dropoffaddresslng: $dropoffaddresslng,ordertime: $ordertime,senderpasscode: $senderpasscode,riderpasscode: $riderpasscode,deliverystatus: $deliverystatus)';
+    return 'Order(pickupaddress: $pickupaddress, dropoffaddress: $dropoffaddress, packagetype: $packagetype, packageheight: $packageheight, packagewidth: $packagewidth, packagelength: $packagelength, packagefrangible: $packagefrangible, packageweight: $packageweight, packagedetail: $packagedetail, sendername: $sendername, senderphone: $senderphone, receiverphone: $receiverphone, receivername: $receivername, estimateddistance: $estimateddistance, deliverymode: $deliverymode, costofdelivery: $costofdelivery, paymentmode: $paymentmode, paymentstatus: $paymentstatus, currentlocation: $currentlocation, locationhistory: $locationhistory, ridername: $ridername, riderphone: $riderphone, rideruid: $rideruid, receiveruid: $receiveruid, senderuid: $senderuid,pickupaddresslat: $pickupaddresslat,dropoffaddresslat: $dropoffaddresslat,pickupaddresslng: $pickupaddresslng,dropoffaddresslng: $dropoffaddresslng,ordertime: $ordertime,ordertimeepoch: $ordertimeepoch,senderpasscode: $senderpasscode,riderpasscode: $riderpasscode,deliverystatus: $deliverystatus)';
   }
 
   @override
@@ -282,6 +288,7 @@ class Order extends ItemsHelper with Item {
         other.riderpasscode == riderpasscode &&
         other.receiveruid == receiveruid &&
         other.ordertime == ordertime &&
+        other.ordertimeepoch == ordertimeepoch &&
         other.deliverystatus == deliverystatus &&
         other.dropoffaddresslat == dropoffaddresslat &&
         other.pickupaddresslat == pickupaddresslat &&
@@ -319,6 +326,7 @@ class Order extends ItemsHelper with Item {
         riderpasscode.hashCode ^
         receiveruid.hashCode ^
         ordertime.hashCode ^
+        ordertimeepoch.hashCode ^
         deliverystatus.hashCode ^
         dropoffaddresslat.hashCode ^
         pickupaddresslat.hashCode ^
@@ -357,6 +365,7 @@ class Order extends ItemsHelper with Item {
     riderpasscode = map['riderpasscode'] ?? "";
     receiveruid = map['receiveruid'] ?? "";
     ordertime = map['ordertime'] ?? "";
+    ordertimeepoch = map['ordertimeepoch'] ?? "";
     deliverystatus = map['deliverystatus'] ?? "";
     dropoffaddresslat = map['dropoffaddresslat'] ?? "";
     pickupaddresslat = map['pickupaddresslat'] ?? "";

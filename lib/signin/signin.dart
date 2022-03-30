@@ -97,14 +97,14 @@ class _SigninState extends State<Signin> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SigninOptions(color: Colors.blue, text: "Facebook", press: () {}),
+              SigninOptions(color: Colors.blue, text: " ", press: () {}),
               SigninOptions(
                   color: Colors.green,
                   text: "Google",
                   press: () {
                     authBloc!.signInWithGoogle(context);
                   }),
-              SigninOptions(color: Colors.red, text: "Twitter", press: () {}),
+              SigninOptions(color: Colors.blue, text: " ", press: () {}),
             ],
           ),
         ),

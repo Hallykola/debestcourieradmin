@@ -8,6 +8,8 @@ class FcmtokenContainer extends ItemsContainer {}
 
 class ProfilesContainer extends ItemsContainer {}
 
+class RidersProfilesContainer extends ItemsContainer {}
+
 class OtherProfilesContainer extends ItemsContainer {}
 
 class SavedAddressContainer extends ItemsContainer {}

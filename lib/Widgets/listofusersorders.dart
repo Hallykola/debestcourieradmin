@@ -32,6 +32,7 @@ class _ListOfUserOrdersState extends State<ListOfUserOrders> {
       case UserType.RIDER:
         await order.getItemsWhereBy(context.read<UserDeliveriesContainer>(),
             'rideruid', widget.uid, "ordertimeepoch");
+        print('I am getting rider query: ${widget.uid} ${context.read<UserDeliveriesContainer>().content.length}');
         break;
       case UserType.USER:
         await order.getItemsWhereBy(context.read<UserDeliveriesContainer>(),
@@ -45,8 +46,7 @@ class _ListOfUserOrdersState extends State<ListOfUserOrders> {
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
     bool detailed = context.watch<DashBloc>().detailed;
-     order =
-        context.watch<UserDeliveriesContainer>().content;
+    order = context.watch<UserDeliveriesContainer>().content;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       //height: screensize.height * 0.5,
@@ -61,31 +61,33 @@ class _ListOfUserOrdersState extends State<ListOfUserOrders> {
               ),
               const Spacer(),
               TextButton(
-                
-                onPressed: () {
-                Provider.of<DashBloc>(context, listen: false)
-                            .setDetailed(false);
-              }, child: Text('Close',style: TextStyle(color: Colors.white),)),
+                  onPressed: () {
+                    Provider.of<DashBloc>(context, listen: false)
+                        .setDetailed(false);
+                  },
+                  child: Text(
+                    'Close',
+                    style: TextStyle(color: Colors.white),
+                  )),
             ],
           ),
           Expanded(
             child: ListView.builder(
-              controller: ScrollController(),
+                controller: ScrollController(),
                 itemCount: order!.length,
                 itemBuilder: (BuildContext context, int index) {
                   return TableRow(
-                    press: () async{
+                    press: () async {
                       setState(() {
                         // detailed = detailed;
-                        
                       });
                       Provider.of<DashBloc>(context, listen: false)
-                            .setDetailed(false);
-                      await Future.delayed(const Duration(seconds: 5), (){});
+                          .setDetailed(false);
+                      await Future.delayed(const Duration(seconds: 5), () {});
                       Provider.of<DashBloc>(context, listen: false)
-                            .setDetailed(true);
-                        Provider.of<DashBloc>(context, listen: false)
-                            .setFocusedOrder(order![index]['item']);
+                          .setDetailed(true);
+                      Provider.of<DashBloc>(context, listen: false)
+                          .setFocusedOrder(order![index]['item']);
                     },
                     origin: order![index]['item'].pickupaddress,
                     destination: order![index]['item'].dropoffaddress,
@@ -125,14 +127,11 @@ class TableRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height:200,
+      height: 200,
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
-      padding: const EdgeInsets.symmetric(vertical: 3,horizontal: 3),
+      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
       decoration: boxDecowhite,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-        
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(
             flex: 2,
             child: Text(
@@ -151,7 +150,6 @@ class TableRow extends StatelessWidget {
               'Date: $date',
               style: bodyLightStyle,
             )),
-            
         Expanded(
             child: Text(
           'Status: $status',

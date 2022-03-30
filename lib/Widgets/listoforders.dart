@@ -17,6 +17,9 @@ class ListOfOrders extends StatefulWidget {
 
 class _ListOfOrdersState extends State<ListOfOrders> {
   String prevCursor = "";
+  DateTime searchinit = DateTime(2021);
+  DateTime searchfinal = DateTime(2021);
+  int times = 10;
   @override
   void initState() {
     super.initState();
@@ -31,6 +34,7 @@ class _ListOfOrdersState extends State<ListOfOrders> {
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
     bool detailed = context.watch<DashBloc>().detailed;
+
     List<Map<String, dynamic>> order =
         context.watch<DeliveriesContainer>().content;
     return Container(
@@ -45,16 +49,45 @@ class _ListOfOrdersState extends State<ListOfOrders> {
                 'All orders',
                 style: h2Style,
               ),
+              Text(' (${context.watch<DeliveriesContainer>().container.length} entries)',style: h2Style,),
               const Spacer(),
+              // Text(
+              //     '${searchinit.microsecondsSinceEpoch} to ${searchfinal.millisecondsSinceEpoch}'),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
                 decoration: boxDecowhite,
-                child: Text('23-4-22 - 23-5-22'),
+                child: GestureDetector(
+                    onTap: () async {
+                      DateTime? initDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.parse("2021-01-01"),
+                          helpText: 'Select initial date',
+                          lastDate: DateTime.now());
+                      DateTime? finalDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.parse("2021-01-01"),
+                          helpText: 'Select final date',
+                          lastDate: DateTime.now());
+                      setState(() {
+                        searchfinal = finalDate!;
+                        searchinit = initDate!;
+                      });
+                      Order quickorder = Order();
+                      quickorder.getItemsDateRange(
+                          Provider.of<DeliveriesContainer>(context,
+                              listen: false),
+                          "ordertimeepoch",
+                          initDate!.millisecondsSinceEpoch,
+                          finalDate!.millisecondsSinceEpoch);
+                    },
+                    child: Icon(Icons.calendar_month)),
               ),
               const SizedBox(
                 width: 10,
               ),
-              SvgPicture.asset('assets/icons/globe.svg')
+              // SvgPicture.asset('assets/icons/globe.svg')
             ],
           ),
           Row(
@@ -103,45 +136,34 @@ class _ListOfOrdersState extends State<ListOfOrders> {
                   );
                 }),
           ),
-          if (prevCursor != "")
+          // if (prevCursor != "")
+          //   TextButton(
+          //       onPressed: () {
+          //         print('here e dey o! ${order.length}');
+          //         setState(() {
+          //           prevCursor = order[9]['item'].ordertime;
+          //         });
+          //         Order neworder = Order();
+          //         neworder.getPrevXItems(context.read<DeliveriesContainer>(),
+          //             10, [prevCursor], "ordertimeepoch");
+          //       },
+          //       child: Text('Prev 10')),
+          if (order.length % 10 == 0)
             TextButton(
                 onPressed: () {
-                  print('here e dey o! ${order.length}');
-                  setState(() {
-                    prevCursor = order[9]['item'].ordertime;
-                  });
                   Order neworder = Order();
-                  neworder.getPrevXItems(context.read<DeliveriesContainer>(),
-                      10, [prevCursor], "ordertimeepoch");
+                  setState(() {
+                    times += 10;
+                  });
+                  neworder.getXItems(context.read<DeliveriesContainer>(), times,
+                      "ordertimeepoch");
+
+                  // neworder.getNextXItems(context.read<DeliveriesContainer>(),
+                  //     10, [context.read<DeliveriesContainer>().content[times-11]['item'].ordertimeepoch], "ordertimeepoch");
                 },
-                child: Text('Prev 10')),
-          TextButton(
-              onPressed: () {
-                print('item length is ${order.length - 1}');
-                setState(() {
-                  prevCursor = order[9]['item'].ordertime;
-                });
-                print(prevCursor);
-                Order neworder = Order();
-                neworder.getNextXItems(context.read<DeliveriesContainer>(), 10,
-                    [order[9]['item'].ordertime], "ordertimeepoch");
-              },
-              child: Text('Next 10'))
-          // ...List.generate(
-          //   order.length,
-          //   (index) => TableRow(
-          //     press: () {
-          //       setState(() {
-          //         detailed = !detailed;
-          //       });
-          //     },
-          //     origin: order[index]['item'].pickupaddress,
-          //     destination: order[index]['item'].dropoffaddress,
-          //     date: order[index]['item'].ordertime,
-          //     status: order[index]['item'].deliverystatus,
-          //     cost: double.parse((order[index]['item'].costofdelivery=="")?'0':order[index]['item'].costofdelivery).toStringAsFixed(2),
-          //   ),
-          // ),
+                child: Text(
+                    'Show 10 More')),
+              
         ],
       ),
     );

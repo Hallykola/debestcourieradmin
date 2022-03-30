@@ -17,7 +17,11 @@ class ListOfPayments extends StatefulWidget {
 }
 
 class _ListOfPaymentsState extends State<ListOfPayments> {
+  int times = 10;
   String prevCursor = "";
+  DateTime searchinit = DateTime(2021);
+  DateTime searchfinal = DateTime(2021);
+  
   @override
   void initState() {
     super.initState();
@@ -47,15 +51,41 @@ class _ListOfPaymentsState extends State<ListOfPayments> {
                 style: h2Style,
               ),
               const Spacer(),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+               Container(
+                padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
                 decoration: boxDecowhite,
-                child: Text('23-4-22 - 23-5-22'),
+                child: GestureDetector(
+                    onTap: () async {
+                      DateTime? initDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.parse("2021-01-01"),
+                          helpText: 'Select initial date',
+                          lastDate: DateTime.now());
+                      DateTime? finalDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.parse("2021-01-01"),
+                          helpText: 'Select final date',
+                          lastDate: DateTime.now());
+                      setState(() {
+                        searchfinal = finalDate!;
+                        searchinit = initDate!;
+                        
+                      });
+                      Payment quickorder = Payment();
+                        quickorder.getItemsDateRange(
+                            Provider.of<PaymentsContainer>(context, listen: false),
+                            "ordertimeepoch",
+                            initDate!.millisecondsSinceEpoch,
+                            finalDate!.millisecondsSinceEpoch);
+                    },
+                    child: Icon(Icons.calendar_month)),
               ),
               const SizedBox(
                 width: 10,
               ),
-              SvgPicture.asset('assets/icons/globe.svg')
+              // SvgPicture.asset('assets/icons/globe.svg')
             ],
           ),
           Row(
@@ -100,30 +130,22 @@ class _ListOfPaymentsState extends State<ListOfPayments> {
                       paymentmode: payment[index]['item'].paymentmode);
                 }),
           ),
-          if (prevCursor != "")
+          
+               if (payment.length % 10 == 0)
             TextButton(
                 onPressed: () {
-                  print('here e dey o! ${payment.length}');
-                  setState(() {
-                    prevCursor = payment[9]['item'].paymenttime;
-                  });
                   Payment neworder = Payment();
-                  neworder.getPrevXItems(context.read<PaymentsContainer>(), 10,
-                      [prevCursor], "paymenttime");
+                  setState(() {
+                    times += 10;
+                  });
+                  neworder.getXItems(context.read<PaymentsContainer>(), times,
+                      "paymenttime");
+
+                  // neworder.getNextXItems(context.read<DeliveriesContainer>(),
+                  //     10, [context.read<DeliveriesContainer>().content[times-11]['item'].ordertimeepoch], "ordertimeepoch");
                 },
-                child: Text('Prev 10')),
-          TextButton(
-              onPressed: () {
-                print('item length is ${payment.length - 1}');
-                setState(() {
-                  prevCursor = payment[9]['item'].paymenttime;
-                });
-                print(prevCursor);
-                Payment neworder = Payment();
-                neworder.getNextXItems(context.read<PaymentsContainer>(), 10,
-                    [payment[9]['item'].paymenttime], "paymenttime");
-              },
-              child: Text('Next 10'))
+                child: Text(
+                    'Show 10 More')),
         ],
       ),
     );

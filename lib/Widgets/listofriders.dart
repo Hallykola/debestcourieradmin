@@ -17,7 +17,8 @@ class ListOfRiders extends StatefulWidget {
 }
 
 class _ListOfRidersState extends State<ListOfRiders> {
-  String prevCursor = "";
+  int times = 10;
+
   @override
   void initState() {
     super.initState();
@@ -26,7 +27,7 @@ class _ListOfRidersState extends State<ListOfRiders> {
     // profile.getItems(context.read<ProfilesContainer>()
     //     //Provider.of<ProfilesContainer>(context, listen: false),
     //     );
-    profile.getXItems(context.read<ProfilesContainer>(), 10, "name");
+    profile.getXItems(context.read<RidersProfilesContainer>(), 10, "name");
   }
 
   @override
@@ -34,7 +35,7 @@ class _ListOfRidersState extends State<ListOfRiders> {
     Size screensize = MediaQuery.of(context).size;
     bool detailed = context.watch<DashBloc>().detailed;
     List<Map<String, dynamic>> profile =
-        context.watch<ProfilesContainer>().content;
+        context.watch<RidersProfilesContainer>().content;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       height: screensize.height * 0.5,
@@ -48,15 +49,8 @@ class _ListOfRidersState extends State<ListOfRiders> {
                 style: h2Style,
               ),
               const Spacer(),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                decoration: boxDecowhite,
-                child: Text('23-4-22 - 23-5-22'),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              SvgPicture.asset('assets/icons/globe.svg')
+
+              // SvgPicture.asset('assets/icons/globe.svg')
             ],
           ),
           Row(
@@ -85,13 +79,13 @@ class _ListOfRidersState extends State<ListOfRiders> {
                       });
                       Provider.of<DashBloc>(context, listen: false)
                           .setDetailed(false);
-                     await Future.delayed(const Duration(milliseconds: 20), () {});
+                      await Future.delayed(
+                          const Duration(milliseconds: 20), () {});
 
                       Provider.of<DashBloc>(context, listen: false)
                           .setFocusedRiderProfile(profile[index]['item']);
                       Provider.of<DashBloc>(context, listen: false)
                           .setDetailed(true);
-
                     },
                     name: profile[index]['item'].name,
                     email: profile[index]['item'].email,
@@ -103,32 +97,20 @@ class _ListOfRidersState extends State<ListOfRiders> {
                   );
                 }),
           ),
-          if (prevCursor != "")
+          if (profile.length % 10 == 0)
             TextButton(
                 onPressed: () {
-                  print('here e dey o! ${profile.length}');
+                  Profile newprofile = Profile();
                   setState(() {
-                    prevCursor = profile[9]['item'].name;
+                    times += 10;
                   });
-                  Profile neworder = Profile();
-                  neworder.baseref = 'riderprofiles';
-                  neworder.getPrevXItems(context.read<ProfilesContainer>(), 10,
-                      [prevCursor], "name");
+                  newprofile.getXItems(
+                      context.read<RidersProfilesContainer>(), times, "name");
+
+                  // neworder.getNextXItems(context.read<DeliveriesContainer>(),
+                  //     10, [context.read<DeliveriesContainer>().content[times-11]['item'].ordertimeepoch], "ordertimeepoch");
                 },
-                child: Text('Prev 10')),
-          TextButton(
-              onPressed: () {
-                print('item length is ${profile.length - 1}');
-                setState(() {
-                  prevCursor = profile[9]['item'].name;
-                });
-                print(prevCursor);
-                Profile neworder = Profile();
-                neworder.baseref = 'riderprofiles';
-                neworder.getNextXItems(context.read<ProfilesContainer>(), 10,
-                    [profile[9]['item'].name], "name");
-              },
-              child: Text('Next 10'))
+                child: Text('Show 10 More')),
         ],
       ),
     );

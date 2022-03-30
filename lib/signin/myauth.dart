@@ -564,6 +564,11 @@ class AuthBloc extends ChangeNotifier {
     });
   }
 
+sendResetPasswordEmail(String email)async{
+   final _firebaseAuth = FirebaseAuth.instance;
+  await _firebaseAuth.sendPasswordResetEmail(email: email);
+}
+
   Future signInWithGoogle(BuildContext context) async {
     final GoogleSignInAccount? googleUser = await _googlSignIn.signIn();
     if (googleUser != null) {

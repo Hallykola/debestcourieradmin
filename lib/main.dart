@@ -29,6 +29,7 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => AuthBloc()),
     ChangeNotifierProvider(create: (_) => ProfilesContainer()),
+        ChangeNotifierProvider(create: (_) => RidersProfilesContainer()),
     ChangeNotifierProvider(create: (_) => OtherProfilesContainer()),
     ChangeNotifierProvider(create: (_) => RequestOrderBloc()),
     ChangeNotifierProvider(create: (_) => ProfileBloc()),

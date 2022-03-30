@@ -15,17 +15,18 @@ class SigninOptions extends StatelessWidget {
     //Size size = MediaQuery.of(context).size;
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Container(
-          padding: const EdgeInsets.all(18),
-          width: 600* 0.33,
-          color: color,
-          child: GestureDetector(
-              onTap: press,
-              child: Center(
-                  child: Text(
-                text,
-                style: const TextStyle(color: Colors.white),
-              ))),
+        return GestureDetector(
+          onTap: press,
+          child: Container(
+            padding: const EdgeInsets.all(18),
+            width: 600 * 0.33,
+            color: color,
+            child: Center(
+                child: Text(
+              text,
+              style: const TextStyle(color: Colors.white),
+            )),
+          ),
         );
       },
     );

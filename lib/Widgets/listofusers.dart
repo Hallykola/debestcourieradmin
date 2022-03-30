@@ -18,6 +18,7 @@ class ListOfUsers extends StatefulWidget {
 }
 
 class _ListOfOrdersState extends State<ListOfUsers> {
+  int times = 10;
   String prevCursor = "";
   @override
   void initState() {
@@ -49,18 +50,14 @@ class _ListOfOrdersState extends State<ListOfUsers> {
                 style: h2Style,
               ),
               const Spacer(),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                decoration: boxDecowhite,
-                child: Text('23-4-22 - 23-5-22'),
-              ),
+
               const SizedBox(
                 width: 10,
               ),
-              SvgPicture.asset('assets/icons/globe.svg')
+              //SvgPicture.asset('assets/icons/globe.svg')
             ],
           ),
-           Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(flex: 1, child: Text('')),
@@ -79,18 +76,18 @@ class _ListOfOrdersState extends State<ListOfUsers> {
                 itemCount: profile.length,
                 itemBuilder: (BuildContext context, int index) {
                   return TableRow(
-                    press: ()async{
+                    press: () async {
                       setState(() {
                         // detailed = detailed;
-                        
                       });
-                       Provider.of<DashBloc>(context, listen: false)
-                            .setDetailed(false);
-                     await Future.delayed(const Duration(milliseconds: 20), () {});
-                        Provider.of<DashBloc>(context, listen: false)
-                            .setFocusedUserProfile(profile[index]['item']);
-                            Provider.of<DashBloc>(context, listen: false)
-                            .setDetailed(true);
+                      Provider.of<DashBloc>(context, listen: false)
+                          .setDetailed(false);
+                      await Future.delayed(
+                          const Duration(milliseconds: 20), () {});
+                      Provider.of<DashBloc>(context, listen: false)
+                          .setFocusedUserProfile(profile[index]['item']);
+                      Provider.of<DashBloc>(context, listen: false)
+                          .setDetailed(true);
                     },
                     name: profile[index]['item'].name,
                     email: profile[index]['item'].email,
@@ -102,32 +99,20 @@ class _ListOfOrdersState extends State<ListOfUsers> {
                   );
                 }),
           ),
-          if (prevCursor != "")
+          if (profile.length % 10 == 0)
             TextButton(
                 onPressed: () {
-                  print('here e dey o! ${profile.length}');
+                  Profile newprofile = Profile();
                   setState(() {
-                    prevCursor = profile[9]['item'].name;
+                    times += 10;
                   });
-                  Profile neworder = Profile();
-                  neworder.baseref = 'profiles';
-                  neworder.getPrevXItems(context.read<ProfilesContainer>(), 10,
-                      [prevCursor], "name");
+                  newprofile.getXItems(
+                      context.read<RidersProfilesContainer>(), times, "name");
+
+                  // neworder.getNextXItems(context.read<DeliveriesContainer>(),
+                  //     10, [context.read<DeliveriesContainer>().content[times-11]['item'].ordertimeepoch], "ordertimeepoch");
                 },
-                child: Text('Prev 10')),
-          TextButton(
-              onPressed: () {
-                print('item length is ${profile.length - 1}');
-                setState(() {
-                  prevCursor = profile[9]['item'].name;
-                });
-               // print(prevCursor);
-                Profile neworder = Profile();
-                neworder.baseref = 'profiles';
-                neworder.getNextXItems(context.read<ProfilesContainer>(), 10,
-                    [profile[9]['item'].name], "name");
-              },
-              child: Text('Next 10'))
+                child: Text('Show 10 More')),
         ],
       ),
     );
