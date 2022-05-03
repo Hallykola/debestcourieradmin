@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 // import 'dart:ffi';
+import 'package:courieradmin/helpers.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:courieradmin/models/categoriescontainer.dart';
 import 'package:courieradmin/models/profile.dart';
@@ -36,13 +38,20 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
   // ignore: prefer_const_constructors
   static final CameraPosition _ikeja = CameraPosition(
     target: LatLng(6.601838, 3.3514863),
-    zoom: 14.4746,
+    zoom: 10.4746,
   );
   Profile? otherProfile;
+  ScrollController controller = ScrollController();
+  BitmapDescriptor? myIcon;
 
   @override
   void initState() {
     super.initState();
+    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+            '/assets/icons/delivery-bike.png')
+        .then((value) {
+      myIcon = value;
+    });
     order = widget.order;
     if (order!.pickupaddresslat != null && order!.pickupaddresslng != null) {
       markers.add(Marker(
@@ -64,6 +73,21 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
 
   @override
   Widget build(BuildContext context) {
+    if (context.watch<RidersProfilesContainer>().content.isNotEmpty) {
+      Profile riderprofile =
+          context.watch<RidersProfilesContainer>().content[0]['item'];
+      if (riderprofile.currentlocation != null) {
+        setState(() {
+          //remove old marker
+          markers.removeWhere((m) => m.markerId.value == 'rider');
+          //add new marker
+          markers.add(Marker(
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+              markerId: const MarkerId('rider'),
+              position: LatLng(riderprofile.lat, riderprofile.lng)));
+        });
+      }
+    }
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -83,33 +107,32 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
                       // addMarker(point, 'origin');
                       // usePosition(point);
                     },
-                    polylines:
-                        mypolylines, //Set<Polyline>.of(polylines.values),
+                    polylines: mypolylines,
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
                     },
                   ),
-                  Container(
-                      height: 40,
-                      margin:
-                          const EdgeInsets.only(top: 40, left: 20, right: 20),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.amberAccent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text('Distance is $distance ',
-                            style: TextStyle(color: Colors.red, fontSize: 20)),
-                      )),
+                  // Container(
+                  //     height: 40,
+                  //     margin:
+                  //         const EdgeInsets.only(top: 40, left: 20, right: 20),
+                  //     padding: const EdgeInsets.symmetric(
+                  //         vertical: 10, horizontal: 20),
+                  //     decoration: BoxDecoration(
+                  //       color: Colors.amberAccent,
+                  //       borderRadius: BorderRadius.circular(20),
+                  //     ),
+                  //     child: Align(
+                  //       alignment: Alignment.center,
+                  //       child: Text('Distance is $distance ',
+                  //           style: TextStyle(color: Colors.red, fontSize: 20)),
+                  //     )),
                 ],
               ),
             ),
             Expanded(
               child: SingleChildScrollView(
-                
+                controller: controller,
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
                   SenderTile(order: order),
                   Divider(
@@ -178,7 +201,6 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
                     title: Text('Package Note'),
                     subtitle: Text('${order!.packagedetail ?? ""}'),
                   ),
-                  
                 ]),
               ),
             )
@@ -223,9 +245,10 @@ class _TripOverviewMapState extends State<TripOverviewMap> {
   getUsers() async {
     UtilBloc utilbloc = Provider.of<UtilBloc>(context, listen: false);
     await utilbloc.getProfile(order!.senderuid, context);
+    if (order!.rideruid!.isNotEmpty) {
+      await utilbloc.getRiderProfile(order!.rideruid, context);
+    }
   }
-
-  
 
   showPickerArray(BuildContext context, Order order) {
     const PickerData2 = '''
@@ -390,30 +413,17 @@ class SenderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: CircleAvatar(
-        radius: 40,
-        backgroundImage: NetworkImage(context
-            .watch<ProfilesContainer>()
-            .content[0]['item']
-            .profilepicurl),
-      ),
+      leading: (context.watch<OtherProfilesContainer>().content.isNotEmpty)
+          ? CircleAvatar(
+              radius: 40,
+              backgroundImage: NetworkImage(context
+                  .watch<OtherProfilesContainer>()
+                  .content[0]['item']
+                  .profilepicurl),
+            )
+          : const Icon(Icons.person),
       title: Text('${order!.sendername}'),
       subtitle: Text('${order!.senderphone}'),
-      // trailing: Row(
-      //   mainAxisSize: MainAxisSize.min,
-      //   children: [
-      //     IconButton(
-      //         onPressed: () {
-      //           launch('tel:${order!.senderphone!}');
-      //         },
-      //         icon: const Icon(Icons.call)),
-      //     IconButton(
-      //         onPressed: () {
-      //           launch('sms: ${order!.senderphone!}');
-      //         },
-      //         icon: const Icon(Icons.message)),
-      //   ],
-      // ),
     );
   }
 }
@@ -428,29 +438,27 @@ class Usertile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(context
-        .watch<ProfilesContainer>()
-        .content[0]['item']
-        .currentlocation
-        .toString());
-    print(
-        context.watch<ProfilesContainer>().content[0]['item'].name.toString());
     return ListTile(
-      leading: CircleAvatar(
-        radius: 40,
-        backgroundImage: (context
-                .watch<OtherProfilesContainer>()
-                .content
-                .isEmpty)
-            ? NetworkImage(
-                'https://firebasestorage.googleapis.com/v0/b/debest-courier.appspot.com/o/photo-1494790108377-be9c29b29330%20(2).jpg?alt=media&token=71ebb4c1-7fa1-4503-9bf8-ee0bd1bfd9b2')
-            : NetworkImage(context
-                .watch<OtherProfilesContainer>()
-                .content[0]['item']
-                .profilepicurl),
-      ),
+      leading: (context.watch<RidersProfilesContainer>().content.isNotEmpty)
+          ? CircleAvatar(
+              radius: 40,
+              backgroundImage: (context
+                      .watch<RidersProfilesContainer>()
+                      .content
+                      .isEmpty)
+                  ? NetworkImage(
+                      'https://firebasestorage.googleapis.com/v0/b/debest-courier.appspot.com/o/photo-1494790108377-be9c29b29330%20(2).jpg?alt=media&token=71ebb4c1-7fa1-4503-9bf8-ee0bd1bfd9b2')
+                  : NetworkImage(context
+                      .watch<RidersProfilesContainer>()
+                      .content[0]['item']
+                      .profilepicurl),
+            )
+          : const Icon(Icons.person),
       title: Text('${order!.ridername}'),
-      subtitle: Text('${order!.riderphone}'),
+      subtitle: (context.watch<RidersProfilesContainer>().content.isEmpty)
+          ? Text('${order!.riderphone}')
+          : Text(
+              '${context.watch<RidersProfilesContainer>().content[0]['item'].platenumber} ||${order!.riderphone} '),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -107,7 +107,7 @@ class ItemsHelper {
     Item type = itema!;
     firestore
         .collection(baseref!)
-        .orderBy(orderby)
+        .orderBy(orderby, descending: true)
         .limit(limit)
         .snapshots()
         .forEach((element) {

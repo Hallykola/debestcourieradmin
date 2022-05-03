@@ -49,7 +49,10 @@ class _ListOfOrdersState extends State<ListOfOrders> {
                 'All orders',
                 style: h2Style,
               ),
-              Text(' (${context.watch<DeliveriesContainer>().container.length} entries)',style: h2Style,),
+              Text(
+                ' (${context.watch<DeliveriesContainer>().container.length} entries)',
+                style: h2Style,
+              ),
               const Spacer(),
               // Text(
               //     '${searchinit.microsecondsSinceEpoch} to ${searchfinal.millisecondsSinceEpoch}'),
@@ -93,13 +96,14 @@ class _ListOfOrdersState extends State<ListOfOrders> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(flex: 1, child: Text('')),
+              //Expanded(flex: 1, child: Text('')),
+              Expanded(flex: 2, child: Text('Type')),
               Expanded(flex: 2, child: Text('Pickup Address')),
               Expanded(flex: 2, child: Text('Drop off Address')),
-              Expanded(flex: 2, child: Text('Delivery Request Date')),
-              Expanded(flex: 1, child: Text('Delivery Status')),
-              Expanded(flex: 1, child: Text('Delivery Cost')),
-              Expanded(flex: 1, child: Text('')),
+              Expanded(child: Text('Request Date')),
+              Expanded(child: Text('Delivery Status')),
+              Expanded(child: Text('Delivery Cost')),
+              Expanded(child: Text('')),
             ],
           ),
           SizedBox(
@@ -124,6 +128,7 @@ class _ListOfOrdersState extends State<ListOfOrders> {
                       Provider.of<DashBloc>(context, listen: false)
                           .setDetailed(true);
                     },
+                    mode: order[index]['item'].deliverymode,
                     origin: order[index]['item'].pickupaddress,
                     destination: order[index]['item'].dropoffaddress,
                     date: order[index]['item'].ordertime,
@@ -161,9 +166,7 @@ class _ListOfOrdersState extends State<ListOfOrders> {
                   // neworder.getNextXItems(context.read<DeliveriesContainer>(),
                   //     10, [context.read<DeliveriesContainer>().content[times-11]['item'].ordertimeepoch], "ordertimeepoch");
                 },
-                child: Text(
-                    'Show 10 More')),
-              
+                child: Text('Show 10 More')),
         ],
       ),
     );
@@ -179,7 +182,9 @@ class TableRow extends StatelessWidget {
     required this.status,
     required this.cost,
     required this.press,
+    required this.mode,
   }) : super(key: key);
+  final String mode;
   final String origin;
   final String destination;
   final String date;
@@ -194,7 +199,13 @@ class TableRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: boxDecowhite,
       child: Row(children: [
-        Expanded(child: SvgPicture.asset('assets/icons/package.svg')),
+        //Expanded(child: SvgPicture.asset('assets/icons/package.svg')),
+        Expanded(
+            flex: 2,
+            child: Text(
+              mode,
+              style: bodyLightStyle,
+            )),
         Expanded(
             flex: 2,
             child: Text(
@@ -208,11 +219,10 @@ class TableRow extends StatelessWidget {
               style: bodyLightStyle,
             )),
         Expanded(
-            flex: 2,
             child: Text(
-              date,
-              style: bodyLightStyle,
-            )),
+          date,
+          style: bodyLightStyle,
+        )),
         Expanded(
             child: Text(
           status,

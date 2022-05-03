@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const String appName = "DeBest Courier";
-const String appNameA = "DeBest";
+const String appName = "DBest Courier";
+const String appNameA = "DBest";
 const String appNameB = "Courier";
 const Color kPrimaryColor = Color.fromARGB(255, 30, 43, 66);
 const TextStyle h1Style = TextStyle(fontSize: 24, fontWeight: FontWeight.w400);

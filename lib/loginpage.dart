@@ -14,21 +14,23 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.amberAccent,
-      body: Center(child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const AppTitle(),
-          Container(
-            //height:300,
-            margin: const EdgeInsets.all(12),
-            width: 600,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
+      body: Center(child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const AppTitle(),
+            Container(
+              //height:300,
+              margin: const EdgeInsets.all(12),
+              width: 600,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
+              ),
+              child: const Signin(),
             ),
-            child: const Signin(),
-          ),
-        ],
+          ],
+        ),
       )),
     );
   }

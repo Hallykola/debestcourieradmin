@@ -62,6 +62,7 @@ class _SigninState extends State<Signin> {
           title: 'Login',
           details: details,
         ),
+        SizedBox(height: 40),
         MyButton(
             text: 'Continue',
             press: () async {
@@ -86,28 +87,29 @@ class _SigninState extends State<Signin> {
                 ));
               }
             }),
-        Text('or'),
-        SizedBox(height: 40),
-        MyUsualButton(
-            press: () => Navigator.pushNamed(context, '/register'),
-            text: 'REGISTER'),
-        SizedBox(height: 40),
-        Container(
-          width: 600,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SigninOptions(color: Colors.blue, text: " ", press: () {}),
-              SigninOptions(
-                  color: Colors.green,
-                  text: "Google",
-                  press: () {
-                    authBloc!.signInWithGoogle(context);
-                  }),
-              SigninOptions(color: Colors.blue, text: " ", press: () {}),
-            ],
-          ),
-        ),
+            SizedBox(height: 40),
+        // Text('or'),
+        // SizedBox(height: 40),
+        // MyUsualButton(
+        //     press: () => Navigator.pushNamed(context, '/register'),
+        //     text: 'REGISTER'),
+        // SizedBox(height: 40),
+        // Container(
+        //   width: 600,
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       SigninOptions(color: Colors.blue, text: " ", press: () {}),
+        //       SigninOptions(
+        //           color: Colors.green,
+        //           text: "Google",
+        //           press: () {
+        //             authBloc!.signInWithGoogle(context);
+        //           }),
+        //       SigninOptions(color: Colors.blue, text: " ", press: () {}),
+        //     ],
+        //   ),
+        // ),
       ],
     );
   }

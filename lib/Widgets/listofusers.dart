@@ -65,6 +65,7 @@ class _ListOfOrdersState extends State<ListOfUsers> {
               Expanded(flex: 2, child: Text('Email')),
               Expanded(flex: 2, child: Text('Phone number')),
               Expanded(flex: 1, child: Text('Address')),
+              Expanded(flex: 1, child: Text('Active')),
               Expanded(flex: 1, child: Text('')),
             ],
           ),
@@ -89,6 +90,14 @@ class _ListOfOrdersState extends State<ListOfUsers> {
                       Provider.of<DashBloc>(context, listen: false)
                           .setDetailed(true);
                     },
+                    activepress: (bool) {
+                      setState(() {
+                        profile[index]['item'].active =
+                            !(profile[index]['item'].active?? true);
+                        profile[index]['item'].updateItem();
+                      });
+                    },
+                    active: profile[index]['item'].active?? true,
                     name: profile[index]['item'].name,
                     email: profile[index]['item'].email,
                     phonenumber: profile[index]['item'].phonenumber,
@@ -128,6 +137,8 @@ class TableRow extends StatelessWidget {
     required this.address,
     required this.profilepicurl,
     required this.press,
+    required this.active,
+    required this.activepress,
   }) : super(key: key);
   final String name;
   final String email;
@@ -135,6 +146,8 @@ class TableRow extends StatelessWidget {
   final String address;
   final String profilepicurl;
   final Function() press;
+  final bool active;
+  final Function(bool) activepress;
 
   @override
   Widget build(BuildContext context) {
@@ -184,6 +197,12 @@ class TableRow extends StatelessWidget {
           address,
           style: bodyLightStyle,
         )),
+        Expanded(
+          child: Switch(
+            value: active,
+            onChanged: activepress,
+          ),
+        ),
         Expanded(
             child: GestureDetector(
           onTap: press,

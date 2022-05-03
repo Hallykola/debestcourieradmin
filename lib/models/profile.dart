@@ -11,6 +11,8 @@ class Profile extends ItemsHelper with Item {
   String address = "";
   String phonenumber = "";
   String email = "";
+  String platenumber = "";
+  bool? active;
   String uid = "";
   String profilepicurl = "";
   LatLng? currentlocation;
@@ -46,6 +48,8 @@ class Profile extends ItemsHelper with Item {
     profilepicurl = map['profilepicurl'] ?? '';
     phonenumber = map['phonenumber'] ?? '';
     email = map['email'] ?? '';
+    platenumber = map['platenumber'] ?? '';
+    active = map['active'] ?? true;
     // currentlocation = map['currentlocation'] ?? '';
 
     currentlocation = (map['position'] != null)
@@ -71,14 +75,14 @@ class Profile extends ItemsHelper with Item {
       'profilepicurl': profilepicurl,
       'phonenumber': phonenumber,
       'email': email,
+      'platenumber': platenumber,
+      'active': active,
       //'currentlocation': currentlocation,
       'currentlocation': myLocation.data,
       'lat': myLocation.latitude,
       'lng': myLocation.longitude,
       'geohash': myLocation.hash,
       'fcmtoken': fcmtoken,
-
-      
     };
   }
 }
